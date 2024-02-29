@@ -188,7 +188,7 @@ if st.sidebar.button('Получить скоринг'):
     input_data['name'] = name
     input_data['surname'] = surname
     input_data['phone'] = phone
-    input_data['Result'] = 'Одобрено' if prediction > 1 - 0.05 else 'Отказано'
+    input_data['Result'] = 'Одобрено' if prediction > 1 - 0.11 else 'Отказано'
     input_data['gender'] = gender
     input_data['marital_status'] = marital_status
     input_data['Probability'] = f'{round(prediction[0]*100, 2)}%'
