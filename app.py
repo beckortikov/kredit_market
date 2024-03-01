@@ -7,7 +7,12 @@ model = joblib.load('tj_consolidate_pycaret_02.pkl')
 # Функция для генерации PDF
 from datetime import datetime
 from fpdf import FPDF
-
+from PIL import Image
+img = Image.open("km_icon.ico")
+st.set_page_config(
+        page_title="Kredit Market",
+        page_icon=img
+)
 def generate_pdf(data, document_number, date):
     # Create instance of FPDF class
     pdf = FPDF()
@@ -94,10 +99,10 @@ def generate_pdf(data, document_number, date):
                        file_name="test.pdf",
                        mime='application/octet-stream')
 
-
-
+st.sidebar.image("km_logo.png", use_column_width=False, width=200)
 # Ввод данных с использованием инпутов
 st.title('Модель скоринга')
+
 manager = st.sidebar.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром", "Зокиров Улугбек"])
 district_options = {
     "Мирзоев Чахонгир": "Джаббор Расулов",
