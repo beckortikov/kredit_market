@@ -8,10 +8,13 @@ model = joblib.load('tj_consolidate_pycaret_02.pkl')
 from datetime import datetime
 from fpdf import FPDF
 from PIL import Image
+
+
 img = Image.open("km_icon.ico")
 st.set_page_config(
         page_title="Kredit Market",
-        page_icon=img
+        page_icon=img,
+        layout="wide"
 )
 def generate_pdf(data, document_number, date):
     # Create instance of FPDF class
@@ -99,113 +102,142 @@ def generate_pdf(data, document_number, date):
                        file_name="test.pdf",
                        mime='application/octet-stream')
 
-st.sidebar.image("km_logo.png", use_column_width=False, width=200)
+st.image("km_logo.png", use_column_width=False, width=300)
 # Ввод данных с использованием инпутов
 st.title('Модель скоринга')
 
-manager = st.sidebar.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром", "Зокиров Улугбек"])
-district_options = {
-    "Мирзоев Чахонгир": "Джаббор Расулов",
-    "Нурматов Камолчон": "Спитамен",
-    "Махмадияров Бахром": "Пенджикент",
-    "Зокиров Улугбек": "Худжанд"
-}
 
-default_district = "Душанбе"  # Default district if no match found
+top_left, top_right = st.columns((3, 1))
+prediction = None
+input_data = None
+document_number = None
+current_date = None
 
-district = district_options.get(manager, default_district)
+with top_left:
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            manager = st.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром", "Зокиров Улугбек"])
+            district_options = {
+                "Мирзоев Чахонгир": "Джаббор Расулов",
+                "Нурматов Камолчон": "Спитамен",
+                "Махмадияров Бахром": "Пенджикент",
+                "Зокиров Улугбек": "Худжанд"
+            }
 
-# # Use district variable in your Streamlit app
-st.sidebar.write(rf'$\textsf{{\normalsize Филиал}}$: {district}')
-# district = st.sidebar.selectbox(r'$\textsf{\normalsize Филиал}$', ["Душанбе", "Худжанд", "Пенджикент", "Джаббор Расулов", "Спитамен"])
-name = st.sidebar.text_input(r'$\textsf{\normalsize Имя}$', '')
-surname = st.sidebar.text_input(r'$\textsf{\normalsize Фамилия}$', '')
-phone = st.sidebar.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
-age = st.sidebar.number_input(r'$\textsf{\normalsize Возраст}$', value=24, step=1)
-gender = st.sidebar.radio(r'$\textsf{\normalsize Пол}$', ['Мужчина', 'Женщина'])
-amount = st.sidebar.number_input(r'$\textsf{\normalsize Сумма}$', value=0, placeholder="Телефон нархи")
-duration = st.sidebar.selectbox(r'$\textsf{\normalsize Срок}$', [3, 6, 9, 12])
-marital_status = st.sidebar.selectbox(r'$\textsf{\normalsize Семейный статус}$', ['Женат/Замужем', 'Не женат/Не замужем', 'Вдова/Вдовец', 'Разведен'])
-credit_history_count = st.sidebar.number_input(r'$\textsf{\normalsize Количество кредитов(история)}$', value=0, step=1)
+            default_district = "Душанбе"  # Default district if no match found
 
-def authenticate_gspread():
-    # Load Google Sheets API credentials
-    sa = gspread.service_account(filename='credits_mobi.json')
-    return sa
+            district = district_options.get(manager, default_district)
 
-# Function to duplicate data to Google Sheets
-def duplicate_to_gsheet(new_row):
-    # Authenticate with Google Sheets
-    gc = authenticate_gspread()
+            # # Use district variable in your Streamlit app
+            # st.write(rf'$\textsf{{\normalsize Филиал}}$: {district}')
+            st.selectbox(r'$\textsf{\normalsize Филиал}$', [district])
+            name = st.text_input(r'$\textsf{\normalsize Имя}$', '')
+            surname = st.text_input(r'$\textsf{\normalsize Фамилия}$', '')
+        with col2:
 
-    # Create a new Google Sheets spreadsheet
-    sh = gc.open("KreditMarket")
+            phone = st.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
+            age = st.number_input(r'$\textsf{\normalsize Возраст}$', value=24, step=1)
+            gender = st.selectbox(r'$\textsf{\normalsize Пол}$', ['Мужчина', 'Женщина'])
+            amount = st.number_input(r'$\textsf{\normalsize Сумма}$', value=0, placeholder="Телефон нархи")
 
-    # Select the first sheet (index 0)
-    worksheet = sh.worksheet("Scoring")
+        with col3:
+            duration = st.selectbox(r'$\textsf{\normalsize Срок}$', [3, 6, 9, 12])
+            marital_status = st.selectbox(r'$\textsf{\normalsize Семейный статус}$', ['Женат/Замужем', 'Не женат/Не замужем', 'Вдова/Вдовец', 'Разведен'])
+            credit_history_count = st.number_input(r'$\textsf{\normalsize Количество кредитов(история)}$', value=0, step=1)
 
-    # Check if there's any content in the worksheet
-    existing_data = worksheet.get_all_values()
+            if st.button('Получить скоринг', type="primary"):
+                current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                document_number = f'Doc_{current_date.replace(" ", "_").replace(":", "_")}'
+                mapping_dis = {
+                "Душанбе": "dushanbe",
+                "Худжанд": "khujand",
+                "Пенджикент": "panjakent",
+                "Джаббор Расулов": "j.rasulov",
+                "Спитамен": "spitamen"
+                }
+                mapping_mar = {
+                    'Женат/Замужем': 'married', 'Не женат/Не замужем':'single', 'Вдова/Вдовец':'widow/widower', 'Разведен':'divorced'
+                }
 
-    # Get existing headers if they exist
-    headers = existing_data[0] if existing_data else None
+                input_data = pd.DataFrame({
+                    'age': [age],
+                    'amount': [amount],
+                    'credit_history_count': [credit_history_count],
+                    'district': [mapping_dis[district]],
+                    'duration': [duration],
+                    'gender': [1 if gender == 'Мужчина' else 0],
+                    'marital_status': [mapping_mar[marital_status]],
+                })
 
-    if not headers:
-        headers = ['Менеджер', 'Филиал', 'Телефон номер', 'Имя', 'Фамилия', 'Возраст', 'Пол', 'Сумма кредита', 'Период', 'Семейное положение', 'Количество кредитов(история)', 'Результат', 'Вероятность возврата', 'Дата', 'Номер документа']
-        worksheet.append_row(headers)
+                prediction = model.predict_proba(input_data)[:, 0]
 
-    # Convert the new_row DataFrame to a list and append it to the worksheet
-    new_row = new_row[['Manager','district', 'phone', 'name', 'surname', 'age', 'gender', 'amount', 'duration', 'marital_status', "credit_history_count",
-                        'Result', 'Probability', 'Date', 'DocumentNumber']]
-    new_row_list = new_row.values.tolist()
-    worksheet.append_rows(new_row_list)
 
-# Предсказание
-if st.sidebar.button('Получить скоринг'):
-    current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    document_number = f'Doc_{current_date.replace(" ", "_").replace(":", "_")}'
-    mapping_dis = {
-    "Душанбе": "dushanbe",
-    "Худжанд": "khujand",
-    "Пенджикент": "panjakent",
-    "Джаббор Расулов": "j.rasulov",
-    "Спитамен": "spitamen"
-    }
-    mapping_mar = {
-        'Женат/Замужем': 'married', 'Не женат/Не замужем':'single', 'Вдова/Вдовец':'widow/widower', 'Разведен':'divorced'
-    }
+                input_data['Manager'] = manager
+                input_data['district'] = district
+                input_data['name'] = name
+                input_data['surname'] = surname
+                input_data['phone'] = phone
+                input_data['Result'] = 'Одобрено' if prediction > 1 - 0.11 else 'Отказано'
+                input_data['gender'] = gender
+                input_data['marital_status'] = marital_status
+                input_data['Probability'] = f'{round(prediction[0]*100, 2)}%'
+                input_data['Date'] = current_date
+                input_data['DocumentNumber'] = document_number
+with top_right:
+    def authenticate_gspread():
+        # Load Google Sheets API credentials
+        sa = gspread.service_account(filename='credits_mobi.json')
+        return sa
 
-    input_data = pd.DataFrame({
-        'age': [age],
-        'amount': [amount],
-        'credit_history_count': [credit_history_count],
-        'district': [mapping_dis[district]],
-        'duration': [duration],
-        'gender': [1 if gender == 'Мужчина' else 0],
-        'marital_status': [mapping_mar[marital_status]],
-    })
+    # Function to duplicate data to Google Sheets
+    def duplicate_to_gsheet(new_row):
+        # Authenticate with Google Sheets
+        gc = authenticate_gspread()
 
-    prediction = model.predict_proba(input_data)[:, 0]
+        # Create a new Google Sheets spreadsheet
+        sh = gc.open("KreditMarket")
+
+        # Select the first sheet (index 0)
+        worksheet = sh.worksheet("Scoring")
+
+        # Check if there's any content in the worksheet
+        existing_data = worksheet.get_all_values()
+
+        # Get existing headers if they exist
+        headers = existing_data[0] if existing_data else None
+
+        if not headers:
+            headers = ['Менеджер', 'Филиал', 'Телефон номер', 'Имя', 'Фамилия', 'Возраст', 'Пол', 'Сумма кредита', 'Период', 'Семейное положение', 'Количество кредитов(история)', 'Результат', 'Вероятность возврата', 'Дата', 'Номер документа']
+            worksheet.append_row(headers)
+
+        # Convert the new_row DataFrame to a list and append it to the worksheet
+        new_row = new_row[['Manager','district', 'phone', 'name', 'surname', 'age', 'gender', 'amount', 'duration', 'marital_status', "credit_history_count",
+                            'Result', 'Probability', 'Date', 'DocumentNumber']]
+        new_row_list = new_row.values.tolist()
+        worksheet.append_rows(new_row_list)
+
+    # Предсказание
     st.subheader('Результат:')
-    st.write(f'Вероятность возврата: {round(prediction[0]*100, 2)}%')
-    input_data['Manager'] = manager
-    input_data['district'] = district
-    input_data['name'] = name
-    input_data['surname'] = surname
-    input_data['phone'] = phone
-    input_data['Result'] = 'Одобрено' if prediction > 1 - 0.11 else 'Отказано'
-    input_data['gender'] = gender
-    input_data['marital_status'] = marital_status
-    input_data['Probability'] = f'{round(prediction[0]*100, 2)}%'
-    input_data['Date'] = current_date
-    input_data['DocumentNumber'] = document_number
 
-    if prediction > 1 - 0.11:
-        st.success(r'$\textsf{\Large Кредит одобрен! 🎉}$')
-        st.balloons()
-        duplicate_to_gsheet(input_data)
-    else:
-        st.error(r'$\textsf{\Large Отказано! 😞}$')
-        duplicate_to_gsheet(input_data)
+    if prediction is not None:
+        st.write(f'Вероятность возврата: {round(prediction[0]*100, 2)}%')
+        if prediction > 1 - 0.11:
+            if_success="Одобрено!"
+            htmlstr1=f"""<p style='background-color:green;
+                                                    color:white;
+                                                    font-size:35px;
+                                                    border-radius:3px;
+                                                    line-height:60px;
+                                                    padding-left:17px;
+                                                    opacity:0.6'>
+                                                    {if_success}</style>
+                                                    <br></p>"""
+            st.markdown(htmlstr1,unsafe_allow_html=True)
+            # st.success(r'$\textsf{\Large }$')
+            st.balloons()
+            duplicate_to_gsheet(input_data)
+        else:
+            st.error(r'$\textsf{\Large Отказано! 😞}$')
+            duplicate_to_gsheet(input_data)
 
-    generate_pdf(input_data, document_number, current_date)
+        generate_pdf(input_data, document_number, current_date)
