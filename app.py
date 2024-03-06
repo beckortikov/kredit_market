@@ -200,7 +200,7 @@ if st.sidebar.button('Получить скоринг'):
     input_data['Date'] = current_date
     input_data['DocumentNumber'] = document_number
 
-    if prediction > 1 - 0.05:
+    if prediction > 1 - 0.11:
         st.success(r'$\textsf{\Large Кредит одобрен! 🎉}$')
         st.balloons()
         duplicate_to_gsheet(input_data)
