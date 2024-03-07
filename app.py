@@ -145,7 +145,7 @@ with top_left:
             marital_status = st.selectbox(r'$\textsf{\normalsize Семейный статус}$', ['Женат/Замужем', 'Не женат/Не замужем', 'Вдова/Вдовец', 'Разведен'])
             credit_history_count = st.number_input(r'$\textsf{\normalsize Количество рассрочки (история клиента)}$', value=0, step=1)
             kredit = st.selectbox(r'$\textsf{\normalsize Активный кредит в других банках}$', ['Нет', "Да"])
-            if st.button('Получить скоринг', type="primary"):
+            if st.button('Получить результат', type="primary"):
                 current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 document_number = f'Doc_{current_date.replace(" ", "_").replace(":", "_")}'
                 mapping_dis = {
