@@ -112,7 +112,7 @@ prediction = None
 input_data = None
 document_number = None
 current_date = None
-
+kredit = None
 with top_left:
         col1, col2, col3, col4 = st.columns(4)
         with col1:
@@ -138,13 +138,13 @@ with top_left:
             phone = st.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
             age = st.number_input(r'$\textsf{\normalsize Возраст}$', value=24, step=1)
             gender = st.selectbox(r'$\textsf{\normalsize Пол}$', ['Мужчина', 'Женщина'])
-            amount = st.number_input(r'$\textsf{\normalsize Сумма}$', value=0, placeholder="Телефон нархи")
+            amount = st.number_input(r'$\textsf{\normalsize Сумма рассрочки}$', value=0, placeholder="Телефон нархи")
 
         with col3:
             duration = st.selectbox(r'$\textsf{\normalsize Срок}$', [3, 6, 9, 12])
             marital_status = st.selectbox(r'$\textsf{\normalsize Семейный статус}$', ['Женат/Замужем', 'Не женат/Не замужем', 'Вдова/Вдовец', 'Разведен'])
-            credit_history_count = st.number_input(r'$\textsf{\normalsize Количество кредитов(история)}$', value=0, step=1)
-
+            credit_history_count = st.number_input(r'$\textsf{\normalsize Количество рассрочки (история клиента)}$', value=0, step=1)
+            kredit = st.selectbox(r'$\textsf{\normalsize Активный кредит в других банках}$', ['Нет', "Да"])
             if st.button('Получить скоринг', type="primary"):
                 current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 document_number = f'Doc_{current_date.replace(" ", "_").replace(":", "_")}'
@@ -218,26 +218,29 @@ with top_right:
 
     # Предсказание
     st.subheader('Результат:')
-
-    if prediction is not None:
-        st.write(f'Вероятность возврата: {round(prediction[0]*100, 2)}%')
-        if prediction > 1 - 0.11:
-            if_success="Одобрено!"
-            htmlstr1=f"""<p style='background-color:green;
-                                                    color:white;
-                                                    font-size:35px;
-                                                    border-radius:3px;
-                                                    line-height:60px;
-                                                    padding-left:17px;
-                                                    opacity:0.6'>
-                                                    {if_success}</style>
-                                                    <br></p>"""
-            st.markdown(htmlstr1,unsafe_allow_html=True)
-            # st.success(r'$\textsf{\Large }$')
-            st.balloons()
-            duplicate_to_gsheet(input_data)
-        else:
+    if kredit is not None:
+        if kredit == "Да":
             st.error(r'$\textsf{\Large Отказано! 😞}$')
-            duplicate_to_gsheet(input_data)
+        else:
+            if prediction is not None:
+                st.write(f'Вероятность возврата: {round(prediction[0]*100, 2)}%')
+                if prediction > 1 - 0.11:
+                    if_success="Одобрено!"
+                    htmlstr1=f"""<p style='background-color:green;
+                                                            color:white;
+                                                            font-size:35px;
+                                                            border-radius:3px;
+                                                            line-height:60px;
+                                                            padding-left:17px;
+                                                            opacity:0.6'>
+                                                            {if_success}</style>
+                                                            <br></p>"""
+                    st.markdown(htmlstr1,unsafe_allow_html=True)
+                    # st.success(r'$\textsf{\Large }$')
+                    st.balloons()
+                    duplicate_to_gsheet(input_data)
+                else:
+                    st.error(r'$\textsf{\Large Отказано! 😞}$')
+                    duplicate_to_gsheet(input_data)
 
-        generate_pdf(input_data, document_number, current_date)
+                generate_pdf(input_data, document_number, current_date)
