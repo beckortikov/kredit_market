@@ -47,12 +47,11 @@ if authentication_status:
     """
     <style>
         section[data-testid="stSidebar"] {
-
-            height: 15% !important;
+            width: 40px important;
             background-color: white;
         }
         .block-container {
-                    padding-top: 3rem;
+                    padding-top: 1rem;
                     padding-bottom: 0rem;
                     padding-left: 5rem;
                     padding-right: 5rem;
