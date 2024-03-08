@@ -162,7 +162,7 @@ if authentication_status:
         with top_left:
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
-                    manager = st.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром", "Зокиров Улугбек"])
+                    manager = st.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Зокиров Улугбек", "Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром"])
                     district_options = {
                         "Мирзоев Чахонгир": "Джаббор Расулов",
                         "Нурматов Камолчон": "Спитамен",
