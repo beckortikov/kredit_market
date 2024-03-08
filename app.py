@@ -57,6 +57,9 @@ if authentication_status:
                         padding-left: 5rem;
                         padding-right: 5rem;
                     }
+            #ManMenu {visibility:hidden;}
+            footer {visibility:hidden;}
+            header {visibility:hidden;}
         </style>
         """,
         unsafe_allow_html=True,
