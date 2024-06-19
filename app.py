@@ -89,8 +89,7 @@ if authentication_status:
                 'Manager': 'Менеджер',
                 'district': 'Филиал',
                 'phone': 'Телефон номер',
-                'name': 'Имя',
-                'surname': 'Фамилия',
+                'name': 'ФИО',
                 'age': 'Возраст',
                 'gender': 'Пол',
                 'amount': 'Сумма рассрочки',
@@ -103,7 +102,7 @@ if authentication_status:
                 'DocumentNumber': 'Номер документа'
             }
 
-            var = ['Manager', 'district', 'phone', 'name', 'surname', 'age', 'gender', 'amount', 'duration',
+            var = ['Manager', 'district', 'phone', 'name', 'age', 'gender', 'amount', 'duration',
                 'marital_status', 'credit_history_count', 'Result', 'Probability', 'Date', 'DocumentNumber']
 
             # Add content to the PDF using a table
@@ -180,8 +179,8 @@ if authentication_status:
                     # # Use district variable in your Streamlit app
                     # st.write(rf'$\textsf{{\normalsize Филиал}}$: {district}')
                     st.selectbox(r'$\textsf{\normalsize Филиал}$', [district])
-                    name = st.text_input(r'$\textsf{\normalsize Имя}$', '')
-                    surname = st.text_input(r'$\textsf{\normalsize Фамилия}$', '')
+                    name = st.text_input(r'$\textsf{\normalsize ФИО}$', '')
+                    # surname = st.text_input(r'$\textsf{\normalsize Фамилия}$', '')
                 with col2:
 
                     phone = st.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
@@ -224,7 +223,7 @@ if authentication_status:
                         input_data['Manager'] = manager
                         input_data['district'] = district
                         input_data['name'] = name
-                        input_data['surname'] = surname
+                        # input_data['surname'] = surname
                         input_data['phone'] = phone
                         input_data['Result'] = 'Одобрено' if prediction > 1 - 0.11 else 'Отказано'
                         input_data['gender'] = gender
@@ -256,11 +255,11 @@ if authentication_status:
                 headers = existing_data[0] if existing_data else None
 
                 if not headers:
-                    headers = ['Менеджер', 'Филиал', 'Телефон номер', 'Имя', 'Фамилия', 'Возраст', 'Пол', 'Сумма кредита', 'Период', 'Семейное положение', 'Количество кредитов(история)', 'Результат', 'Вероятность возврата', 'Дата', 'Номер документа']
+                    headers = ['Менеджер', 'Филиал', 'Телефон номер', 'ФИО', 'Возраст', 'Пол', 'Сумма кредита', 'Период', 'Семейное положение', 'Количество кредитов(история)', 'Результат', 'Вероятность возврата', 'Дата', 'Номер документа']
                     worksheet.append_row(headers)
 
                 # Convert the new_row DataFrame to a list and append it to the worksheet
-                new_row = new_row[['Manager','district', 'phone', 'name', 'surname', 'age', 'gender', 'amount', 'duration', 'marital_status', "credit_history_count",
+                new_row = new_row[['Manager','district', 'phone', 'name', 'age', 'gender', 'amount', 'duration', 'marital_status', "credit_history_count",
                                     'Result', 'Probability', 'Date', 'DocumentNumber']]
                 new_row_list = new_row.values.tolist()
                 worksheet.append_rows(new_row_list)
@@ -336,8 +335,7 @@ if authentication_status:
                 'Manager': 'Менеджер',
                 'district': 'Филиал',
                 'phone': 'Телефон номер',
-                'name': 'Имя',
-                'surname': 'Фамилия',
+                'name': 'ФИО',
                 'age': 'Возраст',
                 'gender': 'Пол',
                 'amount': 'Сумма рассрочки',
@@ -350,7 +348,7 @@ if authentication_status:
                 'DocumentNumber': 'Номер документа'
             }
 
-            var = ['Manager', 'district', 'phone', 'name', 'surname', 'age', 'gender', 'amount', 'duration',
+            var = ['Manager', 'district', 'phone', 'name', 'age', 'gender', 'amount', 'duration',
                 'marital_status', 'credit_history_count', 'Result', 'Probability', 'Date', 'DocumentNumber']
 
             # Add content to the PDF using a table
@@ -427,8 +425,8 @@ if authentication_status:
                     # # Use district variable in your Streamlit app
                     # st.write(rf'$\textsf{{\normalsize Филиал}}$: {district}')
                     st.selectbox(r'$\textsf{\normalsize Филиал}$', [district])
-                    name = st.text_input(r'$\textsf{\normalsize Имя}$', '')
-                    surname = st.text_input(r'$\textsf{\normalsize Фамилия}$', '')
+                    name = st.text_input(r'$\textsf{\normalsize ФИО}$', '')
+                    # surname = st.text_input(r'$\textsf{\normalsize Фамилия}$', '')
                 with col2:
 
                     phone = st.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
@@ -471,7 +469,7 @@ if authentication_status:
                         input_data['Manager'] = manager
                         input_data['district'] = district
                         input_data['name'] = name
-                        input_data['surname'] = surname
+                        # input_data['surname'] = surname
                         input_data['phone'] = phone
                         input_data['Result'] = 'Одобрено' if prediction > 1 - 0.11 else 'Отказано'
                         input_data['gender'] = gender
@@ -503,11 +501,11 @@ if authentication_status:
                 headers = existing_data[0] if existing_data else None
 
                 if not headers:
-                    headers = ['Менеджер', 'Филиал', 'Телефон номер', 'Имя', 'Фамилия', 'Возраст', 'Пол', 'Сумма кредита', 'Период', 'Семейное положение', 'Количество кредитов(история)', 'Результат', 'Вероятность возврата', 'Дата', 'Номер документа']
+                    headers = ['Менеджер', 'Филиал', 'Телефон номер', 'ФИО', 'Возраст', 'Пол', 'Сумма кредита', 'Период', 'Семейное положение', 'Количество кредитов(история)', 'Результат', 'Вероятность возврата', 'Дата', 'Номер документа']
                     worksheet.append_row(headers)
 
                 # Convert the new_row DataFrame to a list and append it to the worksheet
-                new_row = new_row[['Manager','district', 'phone', 'name', 'surname', 'age', 'gender', 'amount', 'duration', 'marital_status', "credit_history_count",
+                new_row = new_row[['Manager','district', 'phone', 'name', 'age', 'gender', 'amount', 'duration', 'marital_status', "credit_history_count",
                                     'Result', 'Probability', 'Date', 'DocumentNumber']]
                 new_row_list = new_row.values.tolist()
                 worksheet.append_rows(new_row_list)
