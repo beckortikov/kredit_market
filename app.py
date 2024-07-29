@@ -432,16 +432,20 @@ if authentication_status:
                     st.selectbox(r'$\textsf{\normalsize Филиал}$', [district])
                     name = st.text_input(r'$\textsf{\normalsize ФИО}$', '')
                     # surname = st.text_input(r'$\textsf{\normalsize Фамилия}$', '')
-                with col2:
-
-                    phone = st.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
                     age = st.number_input(r'$\textsf{\normalsize Возраст}$', value=24, step=1)
+                with col2:
                     gender = st.selectbox(r'$\textsf{\normalsize Пол}$', ['Мужчина', 'Женщина'])
+                    marital_status = st.selectbox(r'$\textsf{\normalsize Семейный статус}$', ['Женат/Замужем', 'Не женат/Не замужем', 'Вдова/Вдовец', 'Разведен'])
                     amount = st.number_input(r'$\textsf{\normalsize Сумма рассрочки}$', value=0, placeholder="Телефон нархи")
+                    duration = st.selectbox(r'$\textsf{\normalsize Срок}$', [3, 6, 9, 12])
+
+
+
+
 
                 with col3:
-                    duration = st.selectbox(r'$\textsf{\normalsize Срок}$', [3, 6, 9, 12])
-                    marital_status = st.selectbox(r'$\textsf{\normalsize Семейный статус}$', ['Женат/Замужем', 'Не женат/Не замужем', 'Вдова/Вдовец', 'Разведен'])
+                    phone = st.text_input(r'$\textsf{\normalsize Телефон номер}$', value=None, placeholder="928009292")
+
                     credit_history_count = st.number_input(r'$\textsf{\normalsize Количество рассрочки (история клиента)}$', value=0, step=1)
                     kredit = st.selectbox(r'$\textsf{\normalsize Активный кредит в других банках}$', ['Нет', "Да"])
                     if st.button('Получить результат', type="primary"):
