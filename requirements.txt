@@ -6,7 +6,6 @@ pandas==1.5.3
 streamlit==1.29.0
 streamlit-authenticator==0.1.5
 fpdf==1.7.2
-plotly
 pillow
 requests
 python-dotenv==1.0.0

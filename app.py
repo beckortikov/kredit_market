@@ -8,7 +8,7 @@ import pandas as pd
 import joblib
 import gspread
 # Загрузка модели
-model = joblib.load('tj_consolidate_pycaret_02.pkl')
+model = joblib.load('model.pkl')
 # Функция для генерации PDF
 from datetime import datetime
 from fpdf import FPDF
