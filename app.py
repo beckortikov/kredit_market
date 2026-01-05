@@ -464,7 +464,8 @@ if authentication_status:
                         "Худжанд": "khujand",
                         "Пенджикент": "panjakent",
                         "Джаббор Расулов": "j.rasulov",
-                        "Спитамен": "spitamen"
+                        "Спитамен": "spitamen",
+                        "Исфара": "isfara"
                         }
                         mapping_mar = {
                             'Женат/Замужем': 'married', 'Не женат/Не замужем':'single', 'Вдова/Вдовец':'widow/widower', 'Разведен':'divorced'
