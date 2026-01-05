@@ -22,18 +22,23 @@ st.set_page_config(
         layout="wide"
 )
 
-names = ["Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром", "Зокиров Улугбек"]
-usernames = ["jakhongir", "kamoljon", "bakhrom", "ulugbek"]
-
-# load hashed passwords
+# load credentials
 file_path = Path(__file__).parent / "hashed_pw.pkl"
 with file_path.open("rb") as file:
-    hashed_passwords = pickle.load(file)
+    credentials = pickle.load(file)
 
-authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
-    "sales_dashboard", "abcdef", cookie_expiry_days=30)
+authenticator = stauth.Authenticate(
+    credentials,
+    "sales_dashboard",
+    "abcdef",
+    cookie_expiry_days=30
+)
 
-name, authentication_status, username = authenticator.login("Login", "main")
+authenticator.login()
+
+authentication_status = st.session_state.get("authentication_status")
+username = st.session_state.get("username")
+name = st.session_state.get("name")
 
 if authentication_status == False:
     st.error("Username/password is incorrect")
@@ -164,12 +169,13 @@ if authentication_status:
         with top_left:
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
-                    manager = st.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Зокиров Улугбек", "Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром"])
+                    manager = st.selectbox(r'$\textsf{\normalsize Менеджер}$', ["Зокиров Улугбек", "Мирзоев Чахонгир", "Нурматов Камолчон", "Махмадияров Бахром", "Менеджер Исфара"])
                     district_options = {
                         "Мирзоев Чахонгир": "Джаббор Расулов",
                         "Нурматов Камолчон": "Спитамен",
                         "Махмадияров Бахром": "Пенджикент",
-                        "Зокиров Улугбек": "Худжанд"
+                        "Зокиров Улугбек": "Худжанд",
+                        "Менеджер Исфара": "Исфара"
                     }
 
                     default_district = "Душанбе"  # Default district if no match found
@@ -204,7 +210,8 @@ if authentication_status:
                         "Худжанд": "khujand",
                         "Пенджикент": "panjakent",
                         "Джаббор Расулов": "j.rasulov",
-                        "Спитамен": "spitamen"
+                        "Спитамен": "spitamen",
+                        "Исфара": "isfara"
                         }
                         mapping_mar = {
                             'Женат/Замужем': 'married', 'Не женат/Не замужем':'single', 'Вдова/Вдовец':'widow/widower', 'Разведен':'divorced'
@@ -420,7 +427,8 @@ if authentication_status:
                         "Мирзоев Чахонгир": "Джаббор Расулов",
                         "Нурматов Камолчон": "Спитамен",
                         "Махмадияров Бахром": "Пенджикент",
-                        "Зокиров Улугбек": "Худжанд"
+                        "Зокиров Улугбек": "Худжанд",
+                        "Менеджер Исфара": "Исфара"
                     }
 
                     default_district = "Душанбе"  # Default district if no match found
