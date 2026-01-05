@@ -155,7 +155,7 @@ if authentication_status:
                             file_name="test.pdf",
                             mime='application/octet-stream')
 
-        st.image("km_logo.png", use_column_width=False, width=300)
+        st.image("km_logo.png", use_container_width=False, width=300)
         # Ввод данных с использованием инпутов
         st.title('Модель скоринга')
 
@@ -408,7 +408,7 @@ if authentication_status:
                             file_name="test.pdf",
                             mime='application/octet-stream')
 
-        st.image("km_logo.png", use_column_width=False, width=300)
+        st.image("km_logo.png", use_container_width=False, width=300)
         # Ввод данных с использованием инпутов
         st.title('Модель скоринга')
 
